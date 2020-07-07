@@ -5,9 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/mmcdole/gofeed"
 )
+
+func getFeed(feedURL string, wg *sync.WaitGroup) {
+	defer wg.Done()
+	fp := gofeed.NewParser()
+	feed, _ := fp.ParseURL(feedURL)
+	fmt.Println(feed.Title)
+}
 
 func main() {
 	file, err := os.Open("feeds.txt")
@@ -16,13 +24,16 @@ func main() {
 	}
 	defer file.Close()
 
-	fp := gofeed.NewParser()
 	scanner := bufio.NewScanner(file)
+	var wg sync.WaitGroup
+
 	for scanner.Scan() {
 		feedURL := scanner.Text()
-		feed, _ := fp.ParseURL(feedURL)
-		fmt.Println(feed.Title)
+		wg.Add(1)
+		go getFeed(feedURL, &wg)
 	}
+
+	wg.Wait()
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
