@@ -14,7 +14,10 @@ func getFeed(feedURL string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	fp := gofeed.NewParser()
 	feed, _ := fp.ParseURL(feedURL)
-	fmt.Println(feed.Title)
+	fmt.Println("title:", feed.Title)
+	for _, item := range feed.Items {
+		fmt.Println("item:", item.Title, item.Published)
+	}
 }
 
 func main() {
