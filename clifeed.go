@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/user"
+	"path/filepath"
 	"sort"
 	"sync"
 	"time"
@@ -50,7 +52,11 @@ func getFeed(feedURL string, wg *sync.WaitGroup, ch chan Item) {
 }
 
 func main() {
-	file, err := os.Open("feeds.txt")
+	usr, _ := user.Current()
+	dir := usr.HomeDir
+	path := filepath.Join(dir, "clifeed.txt")
+
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
