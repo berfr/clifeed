@@ -54,7 +54,7 @@ func getFeed(feedURL string, wg *sync.WaitGroup, ch chan Item) {
 func main() {
 	usr, _ := user.Current()
 	dir := usr.HomeDir
-	path := filepath.Join(dir, "clifeed.txt")
+	path := filepath.Join(dir, ".clifeed")
 
 	file, err := os.Open(path)
 	if err != nil {
